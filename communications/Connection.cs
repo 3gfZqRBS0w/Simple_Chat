@@ -7,7 +7,6 @@ namespace SimpleChat.communications {
         public static int port = 0 ;
         public static int decryptionCode = 0 ;
         public static string username = "Lombres" ;
-
-
     }
+
 }

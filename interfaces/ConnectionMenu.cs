@@ -29,7 +29,7 @@ namespace SimpleChat.interfaces
 
             Label label = new Label("Name");
             Entry entry = new Entry();
-            
+
 
             Label label2 = new Label("Decryption Key");
             Entry decryptionKeyEntry = new Entry();
@@ -37,9 +37,9 @@ namespace SimpleChat.interfaces
             Label label3 = new Label("Port");
             Entry portEntry = new Entry();
 
-            entry.Text = Connection.username ;
-            decryptionKeyEntry.Text = Connection.decryptionCode.ToString() ;
-            portEntry.Text = Connection.port.ToString() ;
+            entry.Text = Connection.username;
+            decryptionKeyEntry.Text = Connection.decryptionCode.ToString();
+            portEntry.Text = Connection.port.ToString();
 
 
 
@@ -73,22 +73,47 @@ namespace SimpleChat.interfaces
                 Connection.username = entry.Text;
                 try
                 {
-                    Connection.decryptionCode = Int32.Parse(decryptionKeyEntry.Text);
-                    Connection.port = Int32.Parse(portEntry.Text);
+
+                    int port = Int32.Parse(portEntry.Text), descryptionCode = Int32.Parse(decryptionKeyEntry.Text);
+
+                    if (port < 0 || port > 65535)
+                    {
+                        MessageDialog md = new MessageDialog(this, DialogFlags.DestroyWithParent, MessageType.Error, ButtonsType.Close, "the port must be between 0 and 65535");
+                        md.Run();
+                        md.Destroy();
+                        Hide();
+                        return;
+                    }
+
+                    if (descryptionCode < 0 || descryptionCode > 9999)
+                    {
+                        MessageDialog md = new MessageDialog(this, DialogFlags.DestroyWithParent, MessageType.Error, ButtonsType.Close, "The decryption code must be between 0 and 65535");
+                        md.Run();
+                        md.Destroy();
+                        Hide();
+                        return;
+                    }
+
+                    Connection.port = port;
+                    Connection.decryptionCode = descryptionCode;
+
                 }
                 catch (Exception ex)
                 {
-                    MessageDialog md = new MessageDialog(this,DialogFlags.DestroyWithParent,MessageType.Error,ButtonsType.Close, "input error");
+                    MessageDialog md = new MessageDialog(this, DialogFlags.DestroyWithParent, MessageType.Error, ButtonsType.Close, "input error :" + ex.Message);
                     md.Run();
                     md.Destroy();
+                    Hide();
+                    return;
                 }
-                MessageDialog mdo = new MessageDialog(this, 
-                DialogFlags.DestroyWithParent, MessageType.Info, 
-                ButtonsType.Close, "input save");
-            mdo.Run();
-            mdo.Destroy();
 
+                MessageDialog mdo = new MessageDialog(this,
+                DialogFlags.DestroyWithParent, MessageType.Info,
+                ButtonsType.Close, "input save");
+                mdo.Run();
+                mdo.Destroy();
                 Hide();
+                return;
 
             };
 
