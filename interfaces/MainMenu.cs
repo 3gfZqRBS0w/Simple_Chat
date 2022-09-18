@@ -2,6 +2,7 @@ using System;
 using Gtk;
 using System.Collections;
 using SimpleChat.communications;
+using SimpleChat.interfaces;
 using System.Collections.Generic;
 using Cairo;
 
@@ -16,6 +17,7 @@ namespace SimpleChat.interfaces
         private Entry entry;
 
         private List<Message> listOfMessage = new List<Message>();
+     
         
         private ListStore store;
         private TreeView treeView ;
@@ -38,7 +40,7 @@ namespace SimpleChat.interfaces
 
         public Simple_Chat() : base(TITLEOFAPPLICATION)
         {
-            listOfMessage.Add(new Message("You need to configure the decryption key", DateTime.Now,"Program", System.Net.IPAddress.Parse("127.0.0.1"))) ;
+            listOfMessage.Add(new Message("You need to configure the decryption key and port", DateTime.Now,"Program", System.Net.IPAddress.Parse("127.0.0.1"))) ;
 
 
             SetDefaultSize(sizeOfApplicationX, sizeOfApplicationY);
@@ -86,6 +88,9 @@ namespace SimpleChat.interfaces
             quit.Clicked += exitApplication;
             about.Clicked += About;
             send.Clicked += OnSendMessage;
+            newConnection.Clicked += delegate {
+                new ConnectionMenu();
+        };
 
             vbox = new VBox(false, 2);
             hbox = new HBox(false, 2);
@@ -172,7 +177,7 @@ transmit texts";
         {
             Console.WriteLine("Sending Message") ;
 
-            Message message = new Message(entry.Text, DateTime.Now,"Lombres", System.Net.IPAddress.Parse("127.0.0.1")) ; 
+            Message message = new Message(entry.Text, DateTime.Now,Connection.username, System.Net.IPAddress.Parse("127.0.0.1")) ; 
 
             listOfMessage.Add(message) ;
             store.AppendValues(message.getDate(), message.getSenderName(), message.getContent());
