@@ -17,6 +17,8 @@ namespace SimpleChat.interfaces
         {
             SetDefaultSize(400, 200);
             SetPosition(WindowPosition.Center);
+            
+
             BorderWidth = 20;
 
 

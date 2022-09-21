@@ -45,6 +45,7 @@ namespace SimpleChat.interfaces
 
             SetDefaultSize(sizeOfApplicationX, sizeOfApplicationY);
             SetPosition(WindowPosition.Center);
+            
             BorderWidth = 8;
             DeleteEvent += delegate { Application.Quit(); };
 
@@ -123,8 +124,7 @@ transmit texts";
 
         private ListStore CreateModel()
         {
-            ListStore store = new ListStore(typeof(string),
-                typeof(string), typeof(string));
+            ListStore store = new ListStore(typeof(string),typeof(string), typeof(string));
 
             foreach (Message message in listOfMessage)
             {
@@ -170,6 +170,12 @@ transmit texts";
         }
     }
 
+    public void AddMessage(Message message) {
+        store.AppendValues(message.getDate(), message.getSenderName(), message.getContent());
+        listOfMessage.Add(message);
+
+    }
+
 
 
 
@@ -177,13 +183,20 @@ transmit texts";
         {
             Console.WriteLine("Sending Message") ;
 
-            Message message = new Message(entry.Text, DateTime.Now,Connection.username, System.Net.IPAddress.Parse("127.0.0.1")) ; 
+            Message message = new Message(entry.Text, DateTime.Now,Connection.username, System.Net.IPAddress.Parse("127.0.0.1")) ;
+
+            Connection.broadcastPacket(message) ;
 
             listOfMessage.Add(message) ;
+
+
+           /*
+           To append value in table
             store.AppendValues(message.getDate(), message.getSenderName(), message.getContent());
-
-
+           */
         }
+
+    
 
 
         private void exitApplication(object sender, EventArgs args)
