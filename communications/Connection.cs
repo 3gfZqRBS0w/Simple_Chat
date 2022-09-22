@@ -17,11 +17,15 @@ namespace SimpleChat.communications
         //Default values
 
         private static Random rand = new Random();
+
         public static int port = 2401;
         public static int decryptionCode = 0;
         public static string username = "Lombres";
-        public static IPAddress broadcast = IPAddress.Any;
+        public static IPAddress IpAddress = IPAddress.Parse("127.0.0.1");
         public static UdpClient udp = new UdpClient(Connection.port);
+
+
+
 
 
 
@@ -55,13 +59,13 @@ namespace SimpleChat.communications
             return result;
         }
 
-        public static void broadcastPacket(Message message)
+        public static void SendPacket(Message message)
         {
             Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
-            Console.WriteLine(Connection.MessageToXml(message)) ; 
+            Console.WriteLine(Connection.MessageToXml(message));
             byte[] sendbuf = Encoding.ASCII.GetBytes(Connection.MessageToXml(message));
-            IPEndPoint ep = new IPEndPoint(broadcast, Connection.port);
+            IPEndPoint ep = new IPEndPoint(IpAddress, Connection.port);
 
 
             s.SendTo(sendbuf, ep);
@@ -76,7 +80,7 @@ namespace SimpleChat.communications
             byte[] bytes = udp.EndReceive(ar, ref ip);
             string messageXML = Encoding.ASCII.GetString(bytes);
 
-            Message message =  Connection.XMlToMessage(messageXML) ; 
+            Message message = Connection.XMlToMessage(messageXML);
             Console.WriteLine(messageXML);
 
             Program.AddMessage(message);

@@ -89,6 +89,9 @@ namespace SimpleChat.interfaces
             quit.Clicked += exitApplication;
             about.Clicked += About;
             send.Clicked += OnSendMessage;
+            saveExchange.Clicked += delegate { 
+                new OpenSave();
+            } ;
             newConnection.Clicked += delegate {
                 new ConnectionMenu();
         };
@@ -177,6 +180,11 @@ transmit texts";
     }
 
 
+    private void ShowSaveMenu(object sender, EventArgs e) {
+        
+    }
+
+
 
 
         private void OnSendMessage(object sender, EventArgs args)
@@ -185,15 +193,15 @@ transmit texts";
 
             Message message = new Message(entry.Text, DateTime.Now,Connection.username, System.Net.IPAddress.Parse("127.0.0.1")) ;
 
-            Connection.broadcastPacket(message) ;
+            Connection.SendPacket(message) ;
 
             listOfMessage.Add(message) ;
 
 
            /*
-           To append value in table
+           To append value in table*/
             store.AppendValues(message.getDate(), message.getSenderName(), message.getContent());
-           */
+          
         }
 
     
