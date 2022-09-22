@@ -1,5 +1,6 @@
 using System;
 using Gtk;
+using System.Text ; 
 using System.Collections;
 using SimpleChat.communications;
 using SimpleChat.interfaces;
@@ -89,7 +90,9 @@ namespace SimpleChat.interfaces
                 try
                 {
 
-                    int port = Int32.Parse(portEntry.Text), descryptionCode = Int32.Parse(decryptionKeyEntry.Text);
+                    int port = Int32.Parse(portEntry.Text) ;
+
+                    string descryptionCode = decryptionKeyEntry.Text ;
 
                     try {
                         Connection.IpAddress = IPAddress.Parse(entry0.Text);
@@ -113,13 +116,25 @@ namespace SimpleChat.interfaces
                         return;
                     }
 
-                    if (descryptionCode < 0 || descryptionCode > 9999)
+                    if (descryptionCode.Length != 24)
                     {
-                        MessageDialog md = new MessageDialog(this, DialogFlags.DestroyWithParent, MessageType.Error, ButtonsType.Close, "The decryption code must be between 0 and 65535");
+                        MessageDialog md = new MessageDialog(this, DialogFlags.DestroyWithParent, MessageType.Error, ButtonsType.Close, "The decryption key must be 24");
                         md.Run();
                         md.Destroy();
                         Hide();
                         return;
+                    }
+
+                    try {
+                        // test
+                        Encryption.Encrypt("blabla", descryptionCode) ;                 
+                    }
+                    catch (Exception ex) {
+                        MessageDialog md = new MessageDialog(this, DialogFlags.DestroyWithParent, MessageType.Error, ButtonsType.Close, "input error :" + ex.Message);
+                    md.Run();
+                    md.Destroy();
+                    Hide();
+                    return;
                     }
 
                     Connection.port = port;

@@ -200,7 +200,11 @@ transmit texts";
 
            /*
            To append value in table*/
+
+           if ( !(Connection.IpAddress.ToString() == "127.0.0.1") ) {
             store.AppendValues(message.getDate(), message.getSenderName(), message.getContent());
+           }
+            
           
         }
 

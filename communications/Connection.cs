@@ -19,14 +19,10 @@ namespace SimpleChat.communications
         private static Random rand = new Random();
 
         public static int port = 2401;
-        public static int decryptionCode = 0;
+        public static string decryptionCode = "pCw0bX$7OLQEI1!o^y%nc3^#";
         public static string username = "Lombres";
         public static IPAddress IpAddress = IPAddress.Parse("127.0.0.1");
         public static UdpClient udp = new UdpClient(Connection.port);
-
-
-
-
 
 
         public static string MessageToXml(Message message)
@@ -61,16 +57,26 @@ namespace SimpleChat.communications
 
         public static void SendPacket(Message message)
         {
+
+
+            // encrypt the message
+            
             Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
             Console.WriteLine(Connection.MessageToXml(message));
-            byte[] sendbuf = Encoding.ASCII.GetBytes(Connection.MessageToXml(message));
+             try {
+            byte[] sendbuf = Encoding.ASCII.GetBytes(Encryption.Encrypt(Connection.MessageToXml(message),decryptionCode));
+        
             IPEndPoint ep = new IPEndPoint(IpAddress, Connection.port);
 
 
             s.SendTo(sendbuf, ep);
+             }
+             catch (Exception e) {
+                Console.WriteLine(e.Message);
+             }
 
-            Console.WriteLine("Message sent to the broadcast address");
+            
         }
 
         public static void listenConnection(IAsyncResult ar)
@@ -78,12 +84,20 @@ namespace SimpleChat.communications
             Console.WriteLine("Waiting for a package");
             IPEndPoint ip = new IPEndPoint(IPAddress.Any, Connection.port);
             byte[] bytes = udp.EndReceive(ar, ref ip);
-            string messageXML = Encoding.ASCII.GetString(bytes);
+            string messageXML = Encryption.Decrypt(Encoding.ASCII.GetString(bytes),decryptionCode);
 
-            Message message = Connection.XMlToMessage(messageXML);
-            Console.WriteLine(messageXML);
+            try {
+                Message message = Connection.XMlToMessage(messageXML);
+                Program.AddMessage(message);
+                Console.WriteLine(messageXML);
+            }
+            catch (Exception e) {
+                Console.WriteLine("Bad code") ; 
+            }
 
-            Program.AddMessage(message);
+            
+
+            
 
 
             Connection.udp.BeginReceive(Connection.listenConnection, new object());
