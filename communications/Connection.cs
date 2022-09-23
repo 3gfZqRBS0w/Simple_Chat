@@ -25,6 +25,8 @@ namespace SimpleChat.communications
         public static UdpClient udp = new UdpClient(Connection.port);
 
 
+
+
         public static string MessageToXml(Message message)
         {
             string resultat = "";
@@ -84,15 +86,16 @@ namespace SimpleChat.communications
             Console.WriteLine("Waiting for a package");
             IPEndPoint ip = new IPEndPoint(IPAddress.Any, Connection.port);
             byte[] bytes = udp.EndReceive(ar, ref ip);
-            string messageXML = Encryption.Decrypt(Encoding.ASCII.GetString(bytes),decryptionCode);
 
             try {
+                string messageXML = Encryption.Decrypt(Encoding.ASCII.GetString(bytes),decryptionCode);
                 Message message = Connection.XMlToMessage(messageXML);
                 Program.AddMessage(message);
                 Console.WriteLine(messageXML);
             }
             catch (Exception e) {
                 Console.WriteLine("Bad code") ; 
+               // Program.AddMessage(new Message("BAD CODE", DateTime.Now(), "BAD CODE", IPAddress.Parse(0.0.0.0)));
             }
 
             
